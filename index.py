@@ -13,7 +13,14 @@ def get_mahasiswa():
         response.status_code = 200
     elif request.method == "POST":
         new_mhs = request.get_json()
-        response = "Succes!!!"
+        try:
+            db.insert("mahasiswa", **new_mhs)
+            response = make_response("<h1>Success!!!</h1>")
+            response.status_code = 201
+        except Exception as e:
+            response = make_response(f"<h1>Ada masalah di server!!!</h1>")
+            print(f"{e}")
+            response.status_code = 500
     else:
         response = ("Bad request", 404)
 
