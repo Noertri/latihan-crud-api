@@ -40,6 +40,25 @@ class DatabaseMahasiswa:
         except Exception as e:
             raise e
 
+    def query_by_id(self, tablename, _id):
+        _sql = "SELECT id FROM {0} WHERE id = ?".format(tablename)
+        try:
+            self.cursor.execute(_sql, (_id,))
+            return self.cursor.fetchall()
+        except Exception as e:
+            raise e
+
+    def update(self):
+        pass
+
+    def delete_by_id(self, tablename, _id):
+        _sql = "DELETE FROM {0} WHERE id = ?".format(tablename)
+        try:
+            self.cursor.execute(_sql, (_id,))
+            self.commit()
+        except Exception as e:
+            raise e
+
     def commit(self):
         try:
             self.connection.commit()

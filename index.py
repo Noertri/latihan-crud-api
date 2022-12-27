@@ -1,4 +1,5 @@
-from flask import Flask, request, make_response, g
+from flask import Flask, request, make_response
+
 from models import DatabaseMahasiswa
 
 app = Flask(__name__)
@@ -16,11 +17,12 @@ def are_args_valid(args):
         return True
 
 
-@app.route("/mahasiswa", methods=["GET", "POST"])
+@app.route("/mahasiswa", methods=["GET", "POST", "DELETE", "PUT"])
 def get_mahasiswa():
     db = DatabaseMahasiswa(database="database_mahasiswa.db", logger=app.logger)
     args = request.args
     method = request.method
+    response = make_response()
     if method == "GET" and len(args) == 0:
         try:
             all_mhs = db.query_all(tablename=TABLE)
@@ -36,6 +38,18 @@ def get_mahasiswa():
             db.insert(tablename=TABLE, record=args)
             response = make_response("Success!!!")
             response.status_code = 201
+        except Exception as e:
+            response = make_response("Ada masalah di server!!!")
+            app.logger.error(f"{e}")
+            response.status_code = 500
+            db.close()
+    elif method == "DELETE" and len(args) == 1 and "id" in args.keys():
+        try:
+            ans = db.query_by_id(tablename=TABLE, _id=int(args["id"].strip()))
+            if ans:
+                db.delete_by_id(tablename=TABLE, _id=int(args["id"].strip()))
+                response = make_response("Success!!!")
+                response.status_code = 200
         except Exception as e:
             response = make_response("Ada masalah di server!!!")
             app.logger.error(f"{e}")
