@@ -1,4 +1,4 @@
-"""Modul CRUD (Create, Read, Update, Delete) untuk menangani database"""
+"""Modul untuk menangani CRUD (Create, Read, Update, Delete) database"""
 
 import sqlite3
 
