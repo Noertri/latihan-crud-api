@@ -5,15 +5,14 @@ import sqlite3
 
 class DatabaseMahasiswa:
 
-    def __init__(self, database, logger):
-        self.logger = logger
+    def __init__(self, database):
         try:
             self.database = database
             self.connection = sqlite3.connect(database=database, timeout=20)
             self.connection.row_factory = self.dict_factory
             self.cursor = self.connection.cursor()
         except Exception as e:
-            self.logger.error(f"{e}", exc_info=True)
+            raise e
 
     @staticmethod
     def dict_factory(cursor, row):
@@ -67,10 +66,10 @@ class DatabaseMahasiswa:
         try:
             self.connection.commit()
         except Exception as e:
-            self.logger.error(f"{e}", exc_info=True)
+            raise e
 
     def close(self):
         try:
             self.connection.close()
         except Exception as e:
-            self.logger.error(f"{e}", exc_info=True)
+            raise e

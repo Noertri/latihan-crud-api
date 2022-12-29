@@ -11,73 +11,45 @@ def dict_factory(cursor, row):
     return {key: value for key, value in zip(fields, row)}
 
 
-# def are_args_valid(args):
-#     keys = [key.strip() for key in args.keys()]
-#     if "nama" in keys and "nim" in keys and "jurusan" in keys:
-#         return True
-
-
 @app.route("/mahasiswa", methods=["GET", "POST", "DELETE", "PUT"])
 def get_mahasiswa():
-    db = DatabaseMahasiswa(database="database_mahasiswa.db", logger=app.logger)
+    db = DatabaseMahasiswa(database="database_mahasiswa.db")
     args = request.args
     method = request.method
     # response = make_response()
-    if method == "GET" and len(args) == 0:
-        try:
+    try:
+        if method == "GET" and len(args) == 0:
             all_mhs = db.query_all(tablename=TABLE)
             response = make_response(all_mhs)
             response.status_code = 200
-        except Exception as e:
-            response = make_response({
-                "pesan": "Ada masalah di server!!!",
-                "kode status": 500,
-                "parameter": args
-            })
-            app.logger.error(f"{e}")
-            response.status_code = 500
-            db.close()
-    elif method == "POST" and all(key.strip() in ("nama", "nim", "jurusan") for key in args.keys()):
-        try:
+        elif method == "POST" and all(key.strip() in ("nama", "nim", "jurusan") for key in args.keys()):
             db.insert(tablename=TABLE, record=args)
             response = make_response({
-                "pesan": "Sukses!!!",
+                "pesan"      : "Sukses!!!",
                 "kode status": 201
             })
             response.status_code = 201
-        except Exception as e:
-            response = make_response({
-                "pesan": "Ada masalah di server!!!",
-                "kode status": 500,
-                "parameter": args
-            })
-            app.logger.error(f"{e}")
-            response.status_code = 500
-            db.close()
-    elif method == "DELETE" and all(key.strip() in ("id",) for key in args.keys()):
-        try:
+        elif method == "DELETE" and all(key.strip() in ("id",) for key in args.keys()):
             db.delete_by_id(tablename=TABLE, _id=int(args["id"].strip()))
             response = make_response({
-                "pesan": "Sukses!!!",
+                "pesan"      : "Sukses!!!",
                 "kode status": 200
             })
             response.status_code = 200
-        except Exception as e:
+        else:
             response = make_response({
-                "pesan": "Ada masalah di server!!!",
-                "kode status": 500,
-                "parameter": args
+                "pesan"      : "Bad requests!!!",
+                "kode status": 404
             })
-            app.logger.error(f"{e}")
-            response.status_code = 500
-            db.close()
-    else:
+            response.status_code = 404
+    except Exception as e:
         response = make_response({
-            "pesan": "Bad requests!!!",
-            "kode status": 404
+            "pesan"      : "Ada masalah di server!!!",
+            "kode status": 500,
+            "parameter"  : args
         })
-        response.status_code = 404
-        db.close()
+        app.logger.error(f"{e}", exc_info=True)
+        response.status_code = 500
 
     return response
 
