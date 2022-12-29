@@ -40,7 +40,7 @@ class DatabaseMahasiswa:
             raise e
 
     def query_by_id(self, tablename, _id):
-        _sql = "SELECT id FROM {0} WHERE id = ?".format(tablename)
+        _sql = "SELECT id FROM {0} WHERE id = ?;".format(tablename)
         try:
             self.cursor.execute(_sql, (_id,))
             return self.cursor.fetchall()
@@ -51,7 +51,7 @@ class DatabaseMahasiswa:
         pass
 
     def delete_by_id(self, tablename, _id):
-        _sql = "DELETE FROM {0} WHERE id = ?".format(tablename)
+        _sql = "DELETE FROM {0} WHERE id = ?;".format(tablename)
         ans = self.query_by_id(tablename, _id)
         if len(ans) > 0:
             try:
