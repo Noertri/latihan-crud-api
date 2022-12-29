@@ -5,11 +5,6 @@ app = Flask(__name__)
 TABLE = "mahasiswa"
 
 
-def dict_factory(cursor, row):
-    fields = [column[0] for column in cursor.description]
-    return {key: value for key, value in zip(fields, row)}
-
-
 @app.route("/mahasiswa", methods=["GET", "POST", "DELETE", "PUT"])
 def get_mahasiswa():
     db = DatabaseMahasiswa(database="database_mahasiswa.db")
