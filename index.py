@@ -37,7 +37,7 @@ def get_mahasiswa():
             app.logger.error(f"{e}")
             response.status_code = 500
             db.close()
-    elif method == "POST" and set(args.keys()) == {"nama", "nim", "jurusan"}:
+    elif method == "POST" and all(key in ["nama", "nim", "jurusan"] for key in args.keys()):
         try:
             db.insert(tablename=TABLE, record=args)
             response = make_response({
