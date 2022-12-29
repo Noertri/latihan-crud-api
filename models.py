@@ -53,11 +53,15 @@ class DatabaseMahasiswa:
 
     def delete_by_id(self, tablename, _id):
         _sql = "DELETE FROM {0} WHERE id = ?".format(tablename)
-        try:
-            self.cursor.execute(_sql, (_id,))
-            self.commit()
-        except Exception as e:
-            raise e
+        ans = self.query_by_id(tablename, _id)
+        if len(ans) > 0:
+            try:
+                self.cursor.execute(_sql, (_id,))
+                self.commit()
+            except Exception as e:
+                raise e
+        else:
+            raise ValueError(f"id dengan nilai {_id} tidak ditemukan!!!")
 
     def commit(self):
         try:
