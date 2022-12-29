@@ -37,7 +37,7 @@ def get_mahasiswa():
             app.logger.error(f"{e}")
             response.status_code = 500
             db.close()
-    elif method == "POST" and all(key in ["nama", "nim", "jurusan"] for key in args.keys()):
+    elif method == "POST" and all(key.strip() in ("nama", "nim", "jurusan") for key in args.keys()):
         try:
             db.insert(tablename=TABLE, record=args)
             response = make_response({
@@ -54,7 +54,7 @@ def get_mahasiswa():
             app.logger.error(f"{e}")
             response.status_code = 500
             db.close()
-    elif method == "DELETE" and len(args) == 1 and "id" in args.keys():
+    elif method == "DELETE" and all(key.strip() in ("id",) for key in args.keys()):
         try:
             db.delete_by_id(tablename=TABLE, _id=int(args["id"].strip()))
             response = make_response({
