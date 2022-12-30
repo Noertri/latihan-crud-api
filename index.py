@@ -33,12 +33,13 @@ def get_mahasiswa():
             })
             response.status_code = 201
         except Exception as e:
+            db.cursor.close()
             response = make_response({
                 "pesan"      : f"Ada masalah di server!!!. {e}",
                 "kode status": 500,
                 "parameter"  : args
             })
-            app.logger.error(f"{e}", exc_info=True)
+            # app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     elif method == "PUT" and any(key.strip() in ("id", "nama", "nim", "jurusan") for key in args.keys()):
         try:
@@ -56,7 +57,7 @@ def get_mahasiswa():
                 "kode status": 500,
                 "parameter"  : args
             })
-            app.logger.error(f"{e}", exc_info=True)
+            # app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     elif method == "DELETE" and all(key.strip() in ("id",) for key in args.keys()):
         try:
@@ -72,7 +73,7 @@ def get_mahasiswa():
                 "kode status": 500,
                 "parameter"  : args
             })
-            app.logger.error(f"{e}", exc_info=True)
+            # app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     else:
         response = make_response({
