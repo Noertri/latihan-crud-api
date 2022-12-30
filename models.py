@@ -24,13 +24,13 @@ class DatabaseMahasiswa:
         return self.cursor.description
 
     def insert(self, tablename, record):
-        _sql = "INSERT INTO {0} ({1}) VALUES ({2});".format(tablename, ", ".join(record.keys()), ", ".join(["?" for _ in range(len(record))]))
+        _sql = "INSERT INTO {0}({1}) VALUES ({2});".format(tablename, ", ".join(record.keys()), ", ".join(["?" for _ in range(len(record))]))
         _sql2 = "SELECT COUNT(*) AS c FROM {0} WHERE nama=? AND nim=? AND jurusan=?;".format(tablename)
         self.cursor.execute(_sql2, [v.strip() for v in record.values()])
         count = self.cursor.fetchone()
         if count["c"] == 0:
             try:
-                self.cursor.execute(_sql, [v.strip() for v in record.values()])
+                self.cursor.execute(_sql, [v for v in record.values()])
                 self.commit()
             except Exception as e:
                 raise e
@@ -53,8 +53,21 @@ class DatabaseMahasiswa:
         except Exception as e:
             raise e
 
-    def update(self):
-        pass
+    def update(self, tablename, new_records, _id):
+        _sql = "UPDATE {0} SET {1} WHERE {2}=?;".format(tablename, ", ".join([f"{k.strip()}=?" for k in new_records.keys()]), "id")
+        _sql2 = "SELECT COUNT(id) AS c FROM {0} WHERE id=?;".format(tablename)
+        self.cursor.execute(_sql2, (_id,))
+        count = self.cursor.fetchone()
+        values = [v for v in new_records.values()]
+        values.append(_id)
+        if count["c"] > 0:
+            try:
+                self.cursor.execute(_sql, tuple(values))
+                self.commit()
+            except Exception as e:
+                raise e
+        else:
+            raise ValueError("id dengan nilai {0} tidak ada!!!".format(_id))
 
     def delete_by_id(self, tablename, _id):
         _sql = "DELETE FROM {0} WHERE id=?;".format(tablename)
