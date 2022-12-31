@@ -117,11 +117,11 @@ def delete_mahasiswa_by_id():
             }))
             response.status_code = 200
         except Exception as e:
-            response = make_response({
+            response = make_response(jsonify({
                 "pesan"      : f"Ada masalah di server!!!. {e}",
                 "kode status": 500,
                 "parameter"  : args
-            })
+            }))
             # app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     else:
