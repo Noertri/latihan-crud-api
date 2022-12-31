@@ -11,7 +11,7 @@ class Mahasiswa:
         try:
             self.database = database
             self.connection = sqlite3.connect(database=database, timeout=20)
-            # self.connection.row_factory = self.dict_factory
+            self.connection.row_factory = self.dict_factory
             self.cursor = self.connection.cursor()
             self.create()
         except Exception as e:
@@ -29,7 +29,7 @@ class Mahasiswa:
                 nim TEXT,
                 jurusan TEXT,
                 UNIQUE(nim)
-        )""".format(self.table)
+        );""".format(self.table)
 
         try:
             self.cursor.execute(_sql)
