@@ -1,5 +1,5 @@
 from flask import Flask, request, make_response
-from models import DatabaseMahasiswa
+from models import Mahasiswa
 
 app = Flask(__name__)
 TABLE = "mahasiswa"
@@ -7,7 +7,7 @@ TABLE = "mahasiswa"
 
 @app.route("/mahasiswa", methods=["GET", "POST", "DELETE", "PUT"])
 def get_mahasiswa():
-    db = DatabaseMahasiswa(database="database_mahasiswa.db")
+    db = Mahasiswa(database="database_mahasiswa.db")
     args = request.args
     method = request.method
     # response = make_response()

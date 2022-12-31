@@ -3,14 +3,17 @@
 import sqlite3
 
 
-class DatabaseMahasiswa:
+class Mahasiswa:
 
-    def __init__(self, database):
+    def __init__(self, database, table):
+        self.table = table
+
         try:
             self.database = database
             self.connection = sqlite3.connect(database=database, timeout=20)
             self.connection.row_factory = self.dict_factory
             self.cursor = self.connection.cursor()
+            self.create()
         except Exception as e:
             raise e
 
@@ -22,6 +25,20 @@ class DatabaseMahasiswa:
     @property
     def column_names(self):
         return self.cursor.description
+
+    def create(self):
+        _sql = """CREATE TABLE IF NOT EXISTS {0}(
+                id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+                nama TEXT,
+                nim TEXT,
+                jurusan TEXT,
+                UNIQUE(nim)
+        )""".format(self.table)
+
+        try:
+            self.cursor.execute(_sql)
+        except Exception as e:
+            raise e
 
     def insert(self, tablename, record):
         _sql = "INSERT INTO {0}({1}) VALUES ({2});".format(tablename, ", ".join(record.keys()), ", ".join(["?" for _ in range(len(record))]))
