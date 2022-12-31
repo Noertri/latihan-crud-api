@@ -1,5 +1,4 @@
 from flask import Flask, request, make_response, jsonify
-
 from models import Mahasiswa
 
 app = Flask(__name__)
@@ -112,10 +111,10 @@ def delete_mahasiswa_by_id():
     if all(key.strip() in ("id",) for key in args.keys()):
         try:
             mhs.delete_by_id(_id=int(args["id"].strip()))
-            response = make_response({
+            response = make_response(jsonify({
                 "pesan"      : "Sukses!!!",
                 "kode status": 200
-            })
+            }))
             response.status_code = 200
         except Exception as e:
             response = make_response({
@@ -126,11 +125,11 @@ def delete_mahasiswa_by_id():
             # app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     else:
-        response = make_response({
+        response = make_response(jsonify({
             "pesan"      : "Bad requests!!!",
             "kode status": 404,
             "parameter"  : args
-        })
+        }))
         response.status_code = 404
 
     return response
