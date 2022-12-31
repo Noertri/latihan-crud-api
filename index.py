@@ -12,24 +12,34 @@ def get_mahasiswa():
     if len(args) == 0:
         try:
             all_mhs = mhs.query_all()
-            response = make_response(jsonify(all_mhs))
+            response = make_response(all_mhs)
             response.status_code = 200
         except Exception as e:
-            response = make_response(jsonify({
+            response = make_response({
                 "pesan"      : "Ada masalah di server!!!",
-                "kode status": 500,
                 "parameter"  : args
-            }))
+            })
+            app.logger.error(f"{e}", exc_info=True)
+            response.status_code = 500
+    elif len(args) == 1 and all(key.strip() in ("id",) for key in args.keys()):
+        try:
+            result = mhs.query_by_id(_id=int(args["id"]))
+            response = make_response(result)
+            response.status_code = 200
+        except Exception as e:
+            response = make_response({
+                "pesan"      : "Ada masalah di server!!!",
+                "parameter"  : args
+            })
             app.logger.error(f"{e}", exc_info=True)
             response.status_code = 500
     else:
-        response = make_response(jsonify({
+        response = make_response({
             "pesan"      : "Bad requests!!!",
-            "kode status": 404,
             "parameter"  : args
-        }))
+        })
 
-        response.status_code = 404
+        response.status_code = 400
 
     return response
 
@@ -50,20 +60,18 @@ def insert_mahasiswa():
         except Exception as e:
             mhs.cursor.close()
             response = make_response({
-                "pesan"      : f"Ada masalah di server!!!. {e}",
-                "kode status": 500,
+                "pesan"      : f"{e}",
                 "parameter"  : args
             })
             # app.logger.error(f"{e}", exc_info=True)
-            response.status_code = 500
+            response.status_code = 400
     else:
-        response = make_response(jsonify({
+        response = make_response({
             "pesan"      : "Bad requests!!!",
-            "kode status": 404,
             "parameter"  : args
-        }))
+        })
 
-        response.status_code = 404
+        response.status_code = 400
 
     return response
 
@@ -85,20 +93,18 @@ def update_mahasiswa():
             response.status_code = 200
         except Exception as e:
             response = make_response({
-                "pesan"      : f"Ada masalah di server!!!. {e}",
-                "kode status": 500,
+                "pesan"      : f"{e}",
                 "parameter"  : args
             })
             # app.logger.error(f"{e}", exc_info=True)
-            response.status_code = 500
+            response.status_code = 404
     else:
-        response = make_response(jsonify({
+        response = make_response({
             "pesan"      : "Bad requests!!!",
-            "kode status": 404,
             "parameter"  : args
-        }))
+        })
 
-        response.status_code = 404
+        response.status_code = 400
 
     return response
 
@@ -111,26 +117,23 @@ def delete_mahasiswa_by_id():
     if all(key.strip() in ("id",) for key in args.keys()):
         try:
             mhs.delete_by_id(_id=int(args["id"].strip()))
-            response = make_response(jsonify({
-                "pesan"      : "Sukses!!!",
-                "kode status": 200
-            }))
+            response = make_response({
+                "pesan"      : "Sukses!!!"
+            })
             response.status_code = 200
         except Exception as e:
-            response = make_response(jsonify({
-                "pesan"      : f"Ada masalah di server!!!. {e}",
-                "kode status": 500,
+            response = make_response({
+                "pesan"      : f"{e}",
                 "parameter"  : args
-            }))
+            })
             # app.logger.error(f"{e}", exc_info=True)
-            response.status_code = 500
+            response.status_code = 404
     else:
-        response = make_response(jsonify({
+        response = make_response({
             "pesan"      : "Bad requests!!!",
-            "kode status": 404,
             "parameter"  : args
-        }))
-        response.status_code = 404
+        })
+        response.status_code = 400
 
     return response
 

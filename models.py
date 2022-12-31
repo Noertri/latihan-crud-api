@@ -59,7 +59,7 @@ class Mahasiswa:
             raise e
 
     def query_by_id(self, _id):
-        _sql = "SELECT id FROM {0} WHERE id = ?;".format(self.table)
+        _sql = "SELECT * FROM {0} WHERE id=?;".format(self.table)
         try:
             self.cursor.execute(_sql, (_id,))
             return self.cursor.fetchall()
