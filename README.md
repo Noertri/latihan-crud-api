@@ -1,2 +1,2 @@
 # latihan crud api
- latihan membust web app crud dengan python
+ latihan membust web api crud dengan python
